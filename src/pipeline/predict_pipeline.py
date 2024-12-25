@@ -8,34 +8,31 @@ import numpy as np
 
 class PredictPipeline:
     def __init__(self):
-        model_path=os.path.join("artifacts","model.pkl")
-        preprocessor_path=os.path.join('artifacts','preprocesor.pkl')
-    def predict(self,features):
+        pass
+    def predict(self,user_ids, movie_titles):
         try:
+            model_path=os.path.join("artifacts","model.pkl")
+            preprocessor_path=os.path.join('artifacts','preprocesor.pkl')
             print("Before Loading")
-            model=load_object(file_path=self.model_path)
-            preprocessor=load_object(file_path=self.preprocessor_path)
+            model=load_object(file_path=model_path)
+            preprocessor=load_object(file_path=preprocessor_path)
             print("After Loading")
-            data_scaled=preprocessor.transform(features)
-            preds=model.predict(data_scaled)
-            return preds
+            features = pd.DataFrame({
+                "user_id": user_ids,
+                "movie_title": movie_titles
+            })
+
+            print("Input Features DataFrame:\n", features)
+            data_scaled = preprocessor.transform(features)
+            user_input = data_scaled[:, 0].reshape(-1, 1)  # First column for user_ids
+            movie_input = data_scaled[:, 1].reshape(-1, 1)  # Second column for movie_titles
+
+            print("User Input Shape:", user_input.shape)
+            print("Movie Input Shape:", movie_input.shape)
+
+            # Make predictions using the model
+            predictions = model.predict([user_input, movie_input])
+            return predictions
         
         except Exception as e:
             raise CustomException(e,sys)
-
-
-class CustomData:
-    def __init__(self, user_ids, movie_ids):
-        self.user_ids = user_ids
-        self.movie_ids = movie_ids
-
-    def get_data_as_arrays(self):
-        try:
-            data_dict = {
-                "user_id": self.user_ids,
-                "movie_id": self.movie_ids
-            }
-            return pd.DataFrame(data_dict)
-
-        except Exception as e:
-            raise CustomException(e, sys)

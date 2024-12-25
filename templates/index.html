@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendation</title>
+</head>
+<body>
+    <h1>Movie Recommendation System</h1>
+    <form method="POST" action="/predict">
+        <label for="user_id">User IDs (comma-separated):</label>
+        <input type="text" id="user_id" name="user_id" placeholder="e.g., 1,2,3" required><br><br>
+    
+        <label for="movie_id">Movie IDs (comma-separated):</label>
+        <input type="text" id="movie_id" name="movie_id" placeholder="e.g., 10,20,30" required><br><br>
+    
+        <button type="submit">Predict</button>
+    </form>
+</body>
+</html>

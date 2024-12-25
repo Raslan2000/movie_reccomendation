@@ -9,7 +9,7 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler, OneHotEncoder
 
 
 @dataclass
@@ -36,24 +36,38 @@ class DataTransformation:
 
     
     def get_data_transformer_object(self):
-        '''
-        This function is responsible for data transformation
-        '''
+        """
+        This function creates and returns a preprocessor object that handles transformations for both user_id and movie_title.
+        """
         try:
-            features = ['user_id', 'movie_title']
+            # Define the features to be preprocessed
+            user_id_feature = ['user_id']
+            movie_title_feature = ['movie_title']
 
-            feature_pipeline = Pipeline(
-                steps = [
+            # Define pipelines for individual features
+            user_pipeline = Pipeline(
+                steps=[
                     ("imputer", SimpleImputer(strategy='most_frequent')),
-                    ('encoder', OrdinalEncoder()),
-                    ('scaler', StandardScaler(with_mean=False))
+                    ('encoder', OneHotEncoder()),  # Encode user IDs as ordinal values
+                    ('scaler', StandardScaler(with_mean=False))  # Scale values
                 ]
             )
-            logging.info("Numerical Columns dealt with and Categorical columns encoded")
 
+            movie_pipeline = Pipeline(
+                steps=[
+                    ("imputer", SimpleImputer(strategy='most_frequent')),
+                    ('encoder', OneHotEncoder()),  # Encode movie titles as ordinal values
+                    ('scaler', StandardScaler(with_mean=False))  # Scale values
+                ]
+            )
+
+            logging.info("User ID and Movie Title columns processed separately.")
+
+            # Combine pipelines for both features
             preprocessor = ColumnTransformer(
-                [
-                    ('feature_pipeline', feature_pipeline, features)
+                transformers=[
+                    ('user_pipeline', user_pipeline, user_id_feature),
+                    ('movie_pipeline', movie_pipeline, movie_title_feature)
                 ]
             )
             return preprocessor
