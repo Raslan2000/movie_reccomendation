@@ -5,4 +5,7 @@ matplotlib
 scikit-learn
 Flask
 pandas
+tensorflow
+tensorflow-datasets
+dill
 #-e .
