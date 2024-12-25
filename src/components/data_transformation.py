@@ -26,11 +26,13 @@ class DataTransformation:
         '''
         Adjust this function to properly handle pandas DataFrame
         '''
+        encoding_info = {}
         for feature in feature_columns:
             unique = data_frame[feature].unique()
             mapping = {key: idx for idx, key in enumerate(unique)}
             data_frame[feature] = data_frame[feature].map(mapping)
-        return data_frame
+            encoding_info[feature] = (mapping, len(unique))
+        return encoding_info
 
     
     def get_data_transformer_object(self):
@@ -63,8 +65,10 @@ class DataTransformation:
         try:
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
-            self.encode_ids(train_df, ['user_id', 'movie_title'])
-            self.encode_ids(test_df, ['user_id', 'movie_title'])
+            encoding_info_train = self.encode_ids(train_df, ['user_id', 'movie_title'])
+            encoding_info_test = self.encode_ids(test_df, ['user_id', 'movie_title'])
+            num_users = encoding_info_train['user_id'][1]  # the number of unique users
+            num_movies = encoding_info_train['movie_title'][1]  # the number of unique movies
             logging.info("Reading train and test set")
             logging.info("Obtaining preprocessing object")
             preprocessing_obj = self.get_data_transformer_object()
@@ -96,6 +100,8 @@ class DataTransformation:
             return (
                 train_arr,
                 test_arr,
+                num_users,
+                num_movies,
                 self.data_transformation_config.preprocessor_obj_file_path,
             )
 
