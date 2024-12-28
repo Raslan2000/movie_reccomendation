@@ -8,4 +8,5 @@ pandas
 tensorflow
 tensorflow-datasets
 dill
+apache-airflow
 #-e .

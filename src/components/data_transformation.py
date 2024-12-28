@@ -9,7 +9,7 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OrdinalEncoder, StandardScaler, OneHotEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
 
 @dataclass
@@ -86,29 +86,26 @@ class DataTransformation:
             logging.info("Reading train and test set")
             logging.info("Obtaining preprocessing object")
             preprocessing_obj = self.get_data_transformer_object()
-            input_feature_train_df = train_df.drop(columns=['rating'], axis = 1)
+            input_feature_train_df = train_df.drop(columns=['rating'], axis=1)
             target_feature_train_df = train_df["rating"]
-            input_feature_test_df = test_df.drop(columns=['rating'], axis = 1)
+            input_feature_test_df = test_df.drop(columns=['rating'], axis=1)
             target_feature_test_df = test_df["rating"]
             logging.info(
-                f"Applying preprocessing object on training dataframe and testing dataframe."
+                "Applying preprocessing object on training dataframe and testing dataframe."
             )
 
-            input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
-            input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df)
+            input_feature_train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
+            input_feature_test_arr = preprocessing_obj.transform(input_feature_test_df)
 
             train_arr = np.c_[
-                input_feature_train_arr, np.array(target_feature_train_df)
+                input_feature_train_arr.toarray(), np.array(target_feature_train_df).reshape(-1, 1)
             ]
-            test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
+            test_arr = np.c_[input_feature_test_arr.toarray(), np.array(target_feature_test_df).reshape(-1, 1)]
 
-            logging.info(f"Saved preprocessing object.")
-
+            logging.info("Saved preprocessing object.")
             save_object(
-
                 file_path=self.data_transformation_config.preprocessor_obj_file_path,
                 obj=preprocessing_obj
-
             )
 
             return (
@@ -121,5 +118,5 @@ class DataTransformation:
 
         except Exception as e:
             raise CustomException(e, sys)
-        
 
+        

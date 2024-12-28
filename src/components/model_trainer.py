@@ -12,7 +12,7 @@ from src.utils import save_object
 
 @dataclass
 class ModelTrainerConfig:
-    trained_model_file_path = os.path.join("artifacts", "model.pkl")
+    trained_model_file_path = os.path.join("artifacts", "model.keras")
 
 class ModelTrainer:
     def __init__(self):
@@ -67,6 +67,7 @@ class ModelTrainer:
                 file_path=self.model_trainer_config.trained_model_file_path,
                 obj=model
             )
+            model.save(self.model_trainer_config.trained_model_file_path)
             return r2
         except Exception as e:
             raise CustomException(e,sys)
