@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy container app to Azure Web App - MovieRecommendation
 
 on:
@@ -14,38 +11,43 @@ jobs:
     runs-on: 'ubuntu-latest'
 
     steps:
-    - uses: actions/checkout@v2
+      # Check out the code
+      - uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      # Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Log in to registry
-      uses: docker/login-action@v2
-      with:
-        registry: https://movierecommendation.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_47efad29e53b4c9e8aedd055f8d35c07 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_4b19f7ca33b6406e95b5ba982f68d267 }}
+      # Log in to Azure Container Registry (ACR)
+      - name: Log in to registry
+        uses: docker/login-action@v2
+        with:
+          registry: movierecommendation.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-    - name: Build and push container image to registry
-      uses: docker/build-push-action@v3
-      with:
-        push: true
-        tags: movierecommendation.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_47efad29e53b4c9e8aedd055f8d35c07 }}/mltest:${{ github.sha }}
-        file: ./Dockerfile
+      # Build and push container image to ACR
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: movierecommendation.azurecr.io/movierecommendation/mltest:${{ github.sha }}
+          file: ./Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      name: production
+      url: https://movierecommendation.azurewebsites.net # Replace with your app's URL
 
     steps:
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'MovieRecommendation'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_b7850d7e360d430b8a13e43fea5b5992 }}
-        images: 'movierecommendation.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_47efad29e53b4c9e8aedd055f8d35c07 }}/mltest:${{ github.sha }}'
+      # Deploy to Azure Web App
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'MovieRecommendation'
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          images: 'movierecommendation.azurecr.io/movierecommendation/mltest:${{ github.sha }}'
