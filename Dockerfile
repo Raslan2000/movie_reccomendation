@@ -1,21 +1,23 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim-buster
+# Base image with Python
+FROM python:3.9-slim
+
+# Maintainer information
+LABEL maintainer="Varun Talreja (vtalreja@andrew.cmu.edu)"
+LABEL version="1.0"
+LABEL description="Dockerfile for Movie Recommendation System"
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy the requirements file and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install packages and Python dependencies in a single RUN command to reduce layer count
-RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends \
-    && pip install --no-cache-dir -r requirements.txt \
-    && apt-get purge -y --auto-remove \
-    && rm -rf /var/lib/apt/lists/*
+# Copy the rest of the application code
+COPY . .
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
+# Expose the port the application will run on
+EXPOSE 4000
 
 # Command to run the application
-CMD ["python3", "app.py"]
+CMD ["python", "app.py"]

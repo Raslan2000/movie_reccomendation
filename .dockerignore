@@ -1,0 +1,18 @@
+# Ignore the airflow directory
+airflow/
+mlruns/
+logs/
+
+
+# Other common ignores
+node_modules/
+.git/
+.gitignore
+Dockerfile
+*.md
+
+__pycache__/
+.git/
+.venv/
+logs/
+*.log
