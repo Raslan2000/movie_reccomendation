@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://movierecommendation.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_5e9ddbdaed0a433fb7f1bf18d54a716f }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_eda56f8699bc4fabafb1190fb9c438fc }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_5e3ede4f02384d10978c324789043edc }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_fafe6c341ca44625978f43a061e0fb1c }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: movierecommendation.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5e9ddbdaed0a433fb7f1bf18d54a716f }}/mltest:${{ github.sha }}
+        tags: movierecommendation.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5e3ede4f02384d10978c324789043edc }}/mltest:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'MovieRecommendation'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_0e5cfebcbfcc4672bddfefd911bf844b }}
-        images: 'movierecommendation.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5e9ddbdaed0a433fb7f1bf18d54a716f }}/mltest:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_e6c4ac88274d4bb38fc3367c3178965c }}
+        images: 'movierecommendation.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5e3ede4f02384d10978c324789043edc }}/mltest:${{ github.sha }}'
