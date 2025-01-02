@@ -1,0 +1,70 @@
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment
+venv/
+.venv/
+env/
+.env/
+
+# Ignore local environment variables
+.env
+*.env
+
+# Ignore data files
+*.csv
+*.tsv
+*.parquet
+*.json
+*.db
+datasets/
+data/
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore Docker-related files
+docker-compose.override.yml
+
+# Ignore temporary files
+*.swp
+*.bak
+*.tmp
+*.pid
+
+# Ignore build artifacts
+build/
+dist/
+*.egg-info/
+*.whl
+
+# Ignore editor and IDE configurations
+.vscode/
+.idea/
+*.iml
+
+# Ignore version control
+.git
+.gitignore
+
+# System files
+.DS_Store
+Thumbs.db
+__MACOSX
+
+# Custom exclusions for this project
+prometheus/
+grafana/
+tests/
+docs/
+notebooks/
+experiments/
+
+
+
+airflow/
+mlruns/
